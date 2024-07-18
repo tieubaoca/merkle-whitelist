@@ -14,16 +14,20 @@ contract MerkleWhitelist is IMerkleWhitelist, Ownable {
 
     function verify(
         address account,
+        uint256 amount,
         bytes32[] calldata merkleProof
     ) external view override returns (bool) {
-        return _verify(account, merkleProof);
+        return _verify(account, amount, merkleProof);
     }
 
     function _verify(
         address account,
+        uint256 amount,
         bytes32[] calldata merkleProof
     ) internal view returns (bool) {
-        bytes32 node = keccak256(bytes.concat(keccak256(abi.encode(account))));
+        bytes32 node = keccak256(
+            bytes.concat(keccak256(abi.encode(account, amount)))
+        );
         return MerkleProof.verify(merkleProof, merkleRoot, node);
     }
 
